@@ -1,0 +1,6 @@
+require("impatient")
+require("mappings")
+require("options")
+require("plugins")
+require("custom_commands")
+require("setup")
