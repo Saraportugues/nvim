@@ -6,7 +6,8 @@ require("nvim-treesitter.configs").setup( {
 	}
 })
 
-require'treesitter-context'.setup{
+-- sticky headers
+require'treesitter-context'.setup {
     enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
     max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
     trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
@@ -89,6 +90,16 @@ require'treesitter-context'.setup{
     -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
     separator = nil,
 }
+
+require("telescope").setup{}
+-- require("telescope").load_extension("harpoon")
+-- 
+-- require("harpoon").setup {
+--     global_settings = {
+--         mark_branch = true,
+--     }
+-- }
+
 
 require("tokyonight").setup({
 	style = "night",

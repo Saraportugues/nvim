@@ -28,3 +28,11 @@ keymap.set({"n"}, "<C-w>Ç", "<C-w>L")
 local builtin = require("telescope.builtin")
 keymap.set("n", "<C-e>", builtin.find_files, {})
 
+-- harpoon
+-- local h_mark = require("harpoon.mark")
+-- local h_ui = require("harpoon.ui")
+-- keymap.set("n", "hl", h_ui.toggle_quick_menu, {})
+-- keymap.set("n", "<M-1>", h_ui.nav_file(1))
+-- keymap.set("n", "<M-1>", h_ui.nav_file(2))
+-- keymap.set("n", "<M-1>", h_ui.nav_file(3))
+-- keymap.set("n", "<M-1>", h_ui.nav_file(4))

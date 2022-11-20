@@ -104,6 +104,11 @@ _G.packer_plugins = {
     path = "/home/mrquatrelle/.local/share/nvim/site/pack/packer/start/cmp_luasnip",
     url = "https://github.com/saadparwaiz1/cmp_luasnip"
   },
+  harpoon = {
+    loaded = true,
+    path = "/home/mrquatrelle/.local/share/nvim/site/pack/packer/start/harpoon",
+    url = "https://github.com/ThePrimeagen/harpoon"
+  },
   ["impatient.nvim"] = {
     loaded = true,
     path = "/home/mrquatrelle/.local/share/nvim/site/pack/packer/start/impatient.nvim",
