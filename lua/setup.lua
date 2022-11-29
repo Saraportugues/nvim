@@ -147,7 +147,9 @@ cmp.setup({
             if cmp.visible() then
                 local entry = cmp.get_selected_entry()
                 if not entry then
-                    cmp.select_next_item()
+                    cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+                else
+                    cmp.confirm()
                 end
             elseif luasnip.expand_or_jumpable() then
                 luasnip.expand_or_jump()
@@ -156,7 +158,7 @@ cmp.setup({
             else
                 fallback()
             end
-        end, { "i", "s" }),
+        end, { "i", "s", }),
     },
     sources = {
         {
@@ -178,9 +180,9 @@ local on_attach = function(client, bufnr)
   -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   local bufopts = { noremap = true, silent = true, buffer = bufnr }
-  vim.keymap.set("n", "<space>dd", vim.lsp.buf.declaration, bufopts)
-  vim.keymap.set("n", "<space>fd", vim.lsp.buf.definition, bufopts) -- fd -> function definition
-  vim.keymap.set("n", "<space>td", vim.lsp.buf.type_definition, bufopts)
+  vim.keymap.set("n", "<space>gd", vim.lsp.buf.declaration, bufopts)
+  vim.keymap.set("n", "<space>gf", vim.lsp.buf.definition, bufopts) -- fd -> function definition
+  vim.keymap.set("n", "<space>gt", vim.lsp.buf.type_definition, bufopts)
   vim.keymap.set("n", "<space>p", vim.lsp.buf.hover, bufopts)
   vim.keymap.set("n", "<space>i", vim.lsp.buf.implementation, bufopts)
   vim.keymap.set("n", "<space>h", vim.lsp.buf.signature_help, bufopts)
