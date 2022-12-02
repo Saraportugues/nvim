@@ -221,3 +221,4 @@ require("neogen").setup({
 })
 
 vim.cmd("set colorcolumn=100") -- set a ruler at 100 characters
+
