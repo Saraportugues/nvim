@@ -48,9 +48,6 @@ return require("packer").startup(function(use)
         "neovim/nvim-lspconfig",
     }
     use {
-        "mfussenegger/nvim-jdtls",
-    }
-    use {
         "danymat/neogen",
     }
 end)
