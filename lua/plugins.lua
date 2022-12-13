@@ -50,5 +50,8 @@ return require("packer").startup(function(use)
     use {
         "danymat/neogen",
     }
+    use {
+        'andweeb/presence.nvim',
+    }
 end)
 
