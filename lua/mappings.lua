@@ -44,3 +44,23 @@ keymap.set({"n"}, "<M-7>", function() ui.nav_file(7) end)
 keymap.set({"n"}, "<M-8>", function() ui.nav_file(8) end)
 keymap.set({"n"}, "<M-9>", function() ui.nav_file(9) end)
 keymap.set({"n"}, "<M-0>", function() ui.nav_file(10) end)
+
+
+-- todo-comments
+todo = require("todo-comments")
+
+vim.keymap.set("n", "<M-t>", function()
+        todo.jump_next()
+    end,
+    { desc = "Next todo comment" })
+
+vim.keymap.set("n", "<M-T>", function()
+        todo.jump_prev()
+    end,
+    { desc = "Previous todo comment" })
+
+vim.keymap.set("n", "<Space>t", function()
+        vim.cmd("TodoTelescope")
+    end,
+    { desc = "Open list of todo's on Telescope" })
+

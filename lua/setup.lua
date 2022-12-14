@@ -220,5 +220,5 @@ require("neogen").setup({
     snippet_engine = "luasnip",
 })
 
-vim.cmd("set colorcolumn=100") -- set a ruler at 100 characters
+require("todo-comments").setup({})
 

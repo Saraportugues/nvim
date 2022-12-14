@@ -51,7 +51,11 @@ return require("packer").startup(function(use)
         "danymat/neogen",
     }
     use {
-        'andweeb/presence.nvim',
+        "andweeb/presence.nvim",
+    }
+    use {
+        "folke/todo-comments.nvim",
+        requires = "nvim-lua/plenary.nvim",
     }
 end)
 
