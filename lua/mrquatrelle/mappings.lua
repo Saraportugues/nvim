@@ -12,3 +12,4 @@ keymap.set("n", "<M-n>", vim.cmd.Ex)
 keymap.set("n", "<leader>h", function()
     vim.diagnostic.open_float()
 end)
+
