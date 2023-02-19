@@ -11,7 +11,7 @@ require("tokyonight").setup({
         hl.Boolean = {fg = c.red}
         hl.Operator = {fg = c.orange}
         hl.Keyword = {fg = c.orange}
-        hl.LineNr = {fg = c.blue, bg = "#121212"}
+        hl.LineNr = {fg = c.blue}
         hl.Type = {fg = c.orange}
         hl.Conditional = {fg = c.orange}
         hl.Repeat = {fg = c.orange}
