@@ -29,7 +29,7 @@ lsp.on_attach(function(client, bufnr)
     vim.keymap.set("n", "<leader>gd", vim.lsp.buf.declaration, bufopts)
     vim.keymap.set("n", "<leader>gf", vim.lsp.buf.definition, bufopts) -- fd -> function definition
     vim.keymap.set("n", "<leader>gt", vim.lsp.buf.type_definition, bufopts)
-    vim.keymap.set("n", "<leader>p", vim.lsp.buf.hover, bufopts)
+    vim.keymap.set("n", "<leader>v", vim.lsp.buf.hover, bufopts)
     vim.keymap.set("n", "<leader>i", vim.lsp.buf.implementation, bufopts)
     vim.keymap.set("n", "<leader>gh", vim.lsp.buf.signature_help, bufopts)
     vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
