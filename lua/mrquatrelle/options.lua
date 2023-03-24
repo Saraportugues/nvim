@@ -19,6 +19,6 @@ o.ignorecase = true
 o.scrolloff = 5
 o.cursorline = true
 
-vim.cmd("set colorcolumn=100") -- set a ruler at 100 characters
+vim.cmd("set colorcolumn=80") -- set a ruler at 100 characters
 
 
