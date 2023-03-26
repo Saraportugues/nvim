@@ -65,4 +65,7 @@ return require("packer").startup(function(use)
     use {
         "andweeb/presence.nvim",
     }
+    use {
+        "m4xshen/smartcolumn.nvim",
+    }
 end)

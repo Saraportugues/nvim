@@ -185,6 +185,11 @@ _G.packer_plugins = {
     path = "/home/mrquatrelle/.local/share/nvim/site/pack/packer/start/presence.nvim",
     url = "https://github.com/andweeb/presence.nvim"
   },
+  ["smartcolumn.nvim"] = {
+    loaded = true,
+    path = "/home/mrquatrelle/.local/share/nvim/site/pack/packer/start/smartcolumn.nvim",
+    url = "https://github.com/m4xshen/smartcolumn.nvim"
+  },
   ["telescope.nvim"] = {
     loaded = true,
     path = "/home/mrquatrelle/.local/share/nvim/site/pack/packer/start/telescope.nvim",
