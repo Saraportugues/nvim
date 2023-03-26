@@ -5,7 +5,7 @@ require("tokyonight").setup({
     on_colors = function(colors)
         colors.red = "#EE4B2B"
         colors.green = "#32CD30"
-        colors.blue = "#5294E3"   
+        colors.blue = "#5294E3"
     end,
     on_highlights = function(hl, c)
         hl.Boolean = {fg = c.red}
