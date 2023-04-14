@@ -8,6 +8,7 @@ lsp.ensure_installed({
     "clangd",
     "lua_ls",
     "bashls",
+    "pyright",
 })
 
 local cmp = require("cmp")
@@ -23,8 +24,7 @@ lsp.setup_nvim_cmp({
     mapping = cmp_mappings
 })
 
-lsp.on_attach(function(client, bufnr)
-
+lsp.on_attach(function(_, bufnr)
     local bufopts = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set("n", "<leader>gd", vim.lsp.buf.declaration, bufopts)
     vim.keymap.set("n", "<leader>gf", vim.lsp.buf.definition, bufopts) -- fd -> function definition
@@ -37,12 +37,19 @@ lsp.on_attach(function(client, bufnr)
     vim.keymap.set("n", "<leader>wl", function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, bufopts)
-    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts) -- r -> rename
+    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)      -- r -> rename
     vim.keymap.set("n", "<leader>a", vim.lsp.buf.code_action, bufopts) -- a -> action
-    vim.keymap.set("n", "<leader>u", vim.lsp.buf.references, bufopts) -- u -> usages
+    vim.keymap.set("n", "<leader>u", vim.lsp.buf.references, bufopts)  -- u -> usages
     vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format { async = true } end, bufopts)
 end)
 
 lsp.nvim_workspace()
 
-lsp.setup()
+lsp.setup({
+    sources = {
+        { name = 'path',     keyword_length = 1 },
+        { name = 'nvim_lsp', keyword_length = 1 },
+        { name = 'buffer',   keyword_length = 3 },
+        { name = 'luasnip',  keyword_length = 1 },
+    }
+})
