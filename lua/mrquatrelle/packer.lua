@@ -68,4 +68,7 @@ return require("packer").startup(function(use)
     use {
         "m4xshen/smartcolumn.nvim",
     }
+    use {
+        "mbbill/undotree",
+    }
 end)
