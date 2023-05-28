@@ -18,4 +18,3 @@ o.ignorecase = true
 
 o.scrolloff = 5
 o.cursorline = true
-

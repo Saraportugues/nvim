@@ -16,5 +16,3 @@ keymap.set("n", "<M-7>", function() ui.nav_file(7) end)
 keymap.set("n", "<M-8>", function() ui.nav_file(8) end)
 keymap.set("n", "<M-9>", function() ui.nav_file(9) end)
 keymap.set("n", "<M-0>", function() ui.nav_file(10) end)
-
-

@@ -57,7 +57,10 @@ return require("packer").startup(function(use)
     }
     use {
         "folke/todo-comments.nvim",
-        requires = "nvim-lua/plenary.nvim",
+        requires = {
+            "nvim-lua/plenary.nvim",
+            "folke/trouble.nvim",
+        },
     }
     use {
         "danymat/neogen",
