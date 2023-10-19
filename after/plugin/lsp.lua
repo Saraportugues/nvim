@@ -1,69 +1,86 @@
-vim.opt.signcolumn = 'yes' -- Reserve space for diagnostic icons
+local vim = vim -- just so the lsp shuts up
+local keymap = vim.keymap
+local vlsp = vim.lsp
 
-local lsp = require('lsp-zero')
-lsp.preset('recommended')
+vim.opt.signcolumn = "yes" -- Reserve space for diagnostic icons
 
-lsp.ensure_installed({
-    "clangd",
-    "rust_analyzer",
-    "jdtls",
-    "lua_ls",
-    "bashls",
-    "pyright",
-})
+local lsp_zero = require("lsp-zero")
+lsp_zero.preset("recommended")
 
-lsp.skip_server_setup({
-    "jdtls", --see plugin/jdtls.lua
-})
 
-lsp.on_attach(function(_, bufnr)
+lsp_zero.on_attach(function(_, bufnr)
     local bufopts = { noremap = true, silent = true, buffer = bufnr }
-    vim.keymap.set("n", "<leader>gd", vim.lsp.buf.declaration, bufopts)
-    vim.keymap.set("n", "<leader>gf", vim.lsp.buf.definition, bufopts) -- fd -> function definition
-    vim.keymap.set("n", "<leader>gt", vim.lsp.buf.type_definition, bufopts)
-    vim.keymap.set("n", "<leader>gh", vim.lsp.buf.signature_help, bufopts)
+    keymap.set("n", "<leader>gd", vlsp.buf.declaration, bufopts)
+    keymap.set("n", "<leader>gf", vlsp.buf.definition, bufopts) -- fd -> function definition
+    keymap.set("n", "<leader>gt", vlsp.buf.type_definition, bufopts)
+    keymap.set("n", "<leader>gh", vlsp.buf.signature_help, bufopts)
 
-    vim.keymap.set("n", "<leader>v", vim.lsp.buf.hover, bufopts)
-    vim.keymap.set("n", "<leader>i", vim.lsp.buf.implementation, bufopts)
-    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)      -- r -> rename
-    vim.keymap.set("n", "<leader>a", vim.lsp.buf.code_action, bufopts) -- a -> action
-    vim.keymap.set("n", "<leader>u", vim.lsp.buf.references, bufopts) -- u -> usages
-    vim.keymap.set("n", "<leader>h", function()
+    keymap.set("n", "<leader>v", vlsp.buf.hover, bufopts)
+    keymap.set("n", "<leader>i", vlsp.buf.implementation, bufopts)
+    keymap.set("n", "<leader>r", vlsp.buf.rename, bufopts)      -- r -> rename
+    keymap.set("n", "<leader>a", vlsp.buf.code_action, bufopts) -- a -> action
+    keymap.set("n", "<leader>u", vlsp.buf.references, bufopts)  -- u -> usages
+    keymap.set("n", "<leader>h", function()
         vim.diagnostic.open_float()
     end)
 
-    vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
-    vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
-    vim.keymap.set("n", "<leader>wl", function()
+    keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
+    keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
+    keymap.set("n", "<leader>wl", function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, bufopts)
 
-    vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format { async = true } end, bufopts)
+    keymap.set("n", "<leader>f", function() vim.lsp.buf.format { async = true } end, bufopts)
 end)
 
-lsp.nvim_workspace()
-
-lsp.setup({
+lsp_zero.setup({
     sources = {
-        { name = 'path',     keyword_length = 1 },
-        { name = 'nvim_lsp', keyword_length = 1 },
-        { name = 'buffer',   keyword_length = 3 },
-        { name = 'luasnip',  keyword_length = 1 },
+        { name = "path",     keyword_length = 1 },
+        { name = "nvim_lsp", keyword_length = 1 },
+        { name = "buffer",   keyword_length = 3 },
+        { name = "luasnip",  keyword_length = 1 },
     }
 })
 
--- cmp config
+-- CMP CONFIG
+
 local cmp = require("cmp")
 
 local cmp_select = {
     behavior = cmp.SelectBehavior.Select
 }
 
-local cmp_mappings = lsp.defaults.cmp_mappings({
+local cmp_mappings = cmp.mapping.preset.insert({
     ["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
     ["<C-n>"] = cmp.mapping.select_next_item(cmp_select),
+
+    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+
+    ["<CR>"] = cmp.mapping.confirm({
+        behavior = cmp.ConfirmBehavior.Replace,
+        select = true,
+    }),
 })
 
-lsp.setup_nvim_cmp({
-    mapping = cmp_mappings
+cmp.setup({
+    snippet = {
+        expand = function(args)
+            require("luasnip").lsp_expand(args.body)
+        end,
+    },
+    mapping = cmp_mappings,
+    sources = {
+        { name = "nvim_lsp" },
+    },
+})
+
+-- MASON CONFIG
+
+require("mason").setup({})
+require("mason-lspconfig").setup({
+    ensure_installed = {},
+    handlers = {
+        lsp_zero.default_setup,
+    },
 })
