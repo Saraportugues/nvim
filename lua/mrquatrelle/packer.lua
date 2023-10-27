@@ -3,9 +3,6 @@ return require("packer").startup(function(use)
         "wbthomason/packer.nvim",
     }
     use {
-        "lewis6991/impatient.nvim",
-    }
-    use {
         "folke/tokyonight.nvim",
     }
     use {
@@ -79,8 +76,5 @@ return require("packer").startup(function(use)
     }
     use {
         "mfussenegger/nvim-jdtls",
-    }
-    use {
-        "github/copilot.vim",
     }
 end)
