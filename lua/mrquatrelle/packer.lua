@@ -80,4 +80,7 @@ return require("packer").startup(function(use)
     use {
         "windwp/nvim-autopairs",
     }
+    use {
+        "folke/zen-mode.nvim"
+    }
 end)
