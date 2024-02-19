@@ -5,10 +5,10 @@ local cache_vars = {}
 -- to determine the root directory of your project
 
 local root_files = {
+    "pom.xml",
     ".git",
     "mvnw",
     "gradlew",
-    "pom.xml",
     "build.gradle",
 }
 
