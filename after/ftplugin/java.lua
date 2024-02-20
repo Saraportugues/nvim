@@ -38,7 +38,7 @@ local function get_jdtls_paths()
         :get_install_path()
 
     path.java_agent = jdtls_install .. "/lombok.jar"
-    path.launcher_jar = vim.fn.glob(jdtls_install .. "/plugins/org.eclipse.equinox.launcher_*.jar")
+    path.launcher_jar = vim.fn.glob(jdtls_install .. "/features/org.eclipse.equinox.executable*.jar")
 
     if vim.fn.has("mac") == 1 then
         path.platform_config = jdtls_install .. "/config_mac"
@@ -126,7 +126,6 @@ local function jdtls_setup(event)
 
     local cmd = {
         "java",
-
         "-Declipse.application=org.eclipse.jdt.ls.core.id1",
         "-Dosgi.bundles.defaultStartLevel=4",
         "-Declipse.product=org.eclipse.jdt.ls.core.product",
@@ -139,15 +138,9 @@ local function jdtls_setup(event)
         "java.base/java.util=ALL-UNNAMED",
         "--add-opens",
         "java.base/java.lang=ALL-UNNAMED",
-
-        "-jar",
-        path.launcher_jar,
-
-        "-configuration",
-        path.platform_config,
-
-        "-data",
-        data_dir,
+        "-jar", path.launcher_jar,
+        "-configuration", path.platform_config,
+        "-data", data_dir,
     }
 
     local lsp_settings = {
@@ -185,17 +178,20 @@ local function jdtls_setup(event)
         },
         completion = {
             favoriteStaticMembers = {
+                "java.util.Objects.requireNonNull",
+                "java.util.Objects.requireNonNullElse",
+                "org.junit.jupiter.api.Assertions.*",
                 "org.hamcrest.MatcherAssert.assertThat",
                 "org.hamcrest.Matchers.*",
                 "org.hamcrest.CoreMatchers.*",
-                "org.junit.jupiter.api.Assertions.*",
-                "java.util.Objects.requireNonNull",
-                "java.util.Objects.requireNonNullElse",
                 "org.mockito.Mockito.*",
             },
-        },
-        contentProvider = {
-            preferred = "fernflower",
+            importOrder = {
+                "java",
+                "javax",
+                "org",
+                "com",
+            }
         },
         extendedClientCapabilities = jdtls.extendedClientCapabilities,
         sources = {
@@ -214,7 +210,8 @@ local function jdtls_setup(event)
 
     -- This starts a new client & server,
     -- or attaches to an existing client & server depending on the `root_dir`.
-    jdtls.start_or_attach({
+
+    local config = {
         cmd = cmd,
         settings = lsp_settings,
         on_attach = jdtls_on_attach,
@@ -226,12 +223,9 @@ local function jdtls_setup(event)
         init_options = {
             bundles = path.bundles,
         },
-    })
+    }
+
+    jdtls.start_or_attach(config)
 end
 
-vim.api.nvim_create_autocmd("FileType", {
-    group = java_cmds,
-    pattern = { "java" },
-    desc = "Setup jdtls",
-    callback = jdtls_setup,
-})
+jdtls_setup({})
