@@ -7,4 +7,4 @@ keymap.set("v", "L", ":m '<-2<CR>gv=gv")
 keymap.set({ "n", "v" }, "<C-k>", "10jzz")
 keymap.set({ "n", "v" }, "<C-l>", "10kzz")
 
-keymap.set("n", "<M-n>", vim.cmd.Ex)
+keymap.set({"n"}, "<M-n>", ":Ex<CR>")
