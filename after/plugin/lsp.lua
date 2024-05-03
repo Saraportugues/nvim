@@ -9,8 +9,6 @@ lsp_zero.preset("recommended")
 
 
 lsp_zero.on_attach(function(_, bufnr)
-    print("zero on_attach")
-
     local bufopts = { noremap = true, silent = true, buffer = bufnr }
     keymap.set("n", "<leader>gd", vlsp.buf.declaration, bufopts)
     keymap.set("n", "<leader>gf", vlsp.buf.definition, bufopts) -- fd -> function definition
