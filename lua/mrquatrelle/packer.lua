@@ -83,4 +83,12 @@ return require("packer").startup(function(use)
     use {
         "folke/zen-mode.nvim"
     }
+    use {
+        "nvim-telescope/telescope-file-browser.nvim",
+        requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
+    }
+    use {
+        "mistricky/codesnap.nvim",
+        run = "make"
+    }
 end)
