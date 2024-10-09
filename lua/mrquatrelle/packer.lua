@@ -7,10 +7,13 @@ return require("packer").startup(function(use)
     }
     use {
         "nvim-telescope/telescope.nvim",
-        tag = "0.1.0",
         requires = {
             "nvim-lua/plenary.nvim",
         },
+    }
+    use {
+        "nvim-telescope/telescope-file-browser.nvim",
+        requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
     }
     use {
         "nvim-treesitter/nvim-treesitter",
@@ -45,6 +48,9 @@ return require("packer").startup(function(use)
             { "L3MON4D3/LuaSnip" },
             { "rafamadriz/friendly-snippets" },
         }
+    }
+    use {
+        "mrcjkb/rustaceanvim",
     }
     use {
         "nvim-lualine/lualine.nvim",
@@ -84,11 +90,12 @@ return require("packer").startup(function(use)
         "folke/zen-mode.nvim"
     }
     use {
-        "nvim-telescope/telescope-file-browser.nvim",
-        requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
-    }
-    use {
         "mistricky/codesnap.nvim",
         run = "make"
     }
+
+    use({
+        "iamcco/markdown-preview.nvim",
+        run = function() vim.fn["mkdp#util#install"]() end,
+    })
 end)

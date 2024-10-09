@@ -49,5 +49,8 @@ require("mason-lspconfig").setup({
     ensure_installed = {},
     handlers = {
         lsp_zero.default_setup,
+
+        -- servers to ignore
+        rust_analyzer = lsp_zero.noop,
     },
 })
