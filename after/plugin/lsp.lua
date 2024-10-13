@@ -43,7 +43,6 @@ lsp_zero.setup({
 })
 
 -- MASON CONFIG
-
 require("mason").setup({})
 require("mason-lspconfig").setup({
     ensure_installed = {},
@@ -51,6 +50,7 @@ require("mason-lspconfig").setup({
         lsp_zero.default_setup,
 
         -- servers to ignore
+        jdtls = lsp_zero.noop,
         rust_analyzer = lsp_zero.noop,
     },
 })

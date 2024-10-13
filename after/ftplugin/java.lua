@@ -1,72 +1,57 @@
-local java_cmds = vim.api.nvim_create_augroup("java_cmds", { clear = true })
-local cache_vars = {}
+local vim = vim
+local jdtls = require("jdtls")
+-- local jdtls_dap = require("jdtls.dap")
+local jdtls_setup = require("jdtls.setup")
+local home = os.getenv("HOME")
 
--- `nvim-jdtls` will look for these files/folders
--- to determine the root directory of your project
-
-local root_files = {
-    "pom.xml",
+local root_markers = {
     ".git",
     "mvnw",
     "gradlew",
-    "build.gradle",
+    "pom.xml",
+    "build.gradle"
 }
 
-local features = {
-    -- change this to `true` to enable codelens
-    codelens = false,
-    -- change this to `true` if you have `nvim-dap`,
-    -- `java-test` and `java-debug-adapter` installed
-    debugger = false,
+local root_dir = jdtls_setup.find_root(root_markers)
+
+local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
+local workspace_dir = home .. "/.cache/jdtls/workspace" .. project_name
+
+-- 💀
+local path_to_mason_packages = home .. "/.local/share/nvim/mason/packages"
+-- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                       ^^^^^^^^^^^^^^
+
+local path_to_jdtls = path_to_mason_packages .. "/jdtls"
+-- local path_to_jdebug = path_to_mason_packages .. "/java-debug-adapter"
+-- local path_to_jtest = path_to_mason_packages .. "/java-test"
+
+local path_to_config = path_to_jdtls .. "/config_linux"
+local lombok_path = path_to_jdtls .. "/lombok.jar"
+
+-- 💀
+local path_to_jar = path_to_jdtls .. "/plugins/org.eclipse.equinox.launcher_1.6.900.v20240613-2009.jar"
+-- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                       ^^^^^^^^^^^^^^
+
+local bundles = {
+    -- vim.fn.glob(path_to_jdebug .. "/extension/server/com.microsoft.java.debug.plugin-*.jar", true),
 }
 
-local function get_jdtls_paths()
-    ---
-    -- we will use this function to get all the paths
-    -- we need to start the LSP server.
-    ---
-    if cache_vars.paths then
-        return cache_vars.paths
-    end
+-- vim.list_extend(bundles, vim.split(vim.fn.glob(path_to_jtest .. "/extension/server/*.jar", true), "\n"))
 
-    local path = {}
+-- LSP settings for Java.
+local on_attach = function(_, bufnr)
+    -- jdtls.setup_dap({ hotcodereplace = "auto" })
+    -- jdtls_dap.setup_dap_main_class_configs()
+    jdtls_setup.add_commands()
 
-    path.data_dir = vim.fn.stdpath("cache") .. "/nvim-jdtls"
-
-    local jdtls_install = require("mason-registry")
-        .get_package("jdtls")
-        :get_install_path()
-
-    path.java_agent = jdtls_install .. "/lombok.jar"
-    path.launcher_jar = vim.fn.glob(jdtls_install .. "/features/org.eclipse.equinox.executable*.jar")
-
-    if vim.fn.has("mac") == 1 then
-        path.platform_config = jdtls_install .. "/config_mac"
-    elseif vim.fn.has("unix") == 1 then
-        path.platform_config = jdtls_install .. "/config_linux"
-    elseif vim.fn.has("win32") == 1 then
-        path.platform_config = jdtls_install .. "/config_win"
-    end
-
-    return path
-end
-
-local function enable_debugger(buffer)
-    -- do nothing
-end
-
-local function enable_codelens(buffer)
-    -- do nothing
-end
-
-local function jdtls_on_attach(client, bufnr)
-    if features.debugger then
-        enable_debugger(bufnr)
-    end
-
-    if features.codelens then
-        enable_codelens(bufnr)
-    end
+    -- require("lsp_signature").on_attach({
+    --     bind = true,
+    --     padding = "",
+    --     handler_opts = {
+    --         border = "rounded",
+    --     },
+    --     hint_prefix = "󱄑 ",
+    -- }, bufnr)
 
     local opts = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set("n", "<leader>gd", vim.lsp.buf.declaration, opts)
@@ -76,9 +61,9 @@ local function jdtls_on_attach(client, bufnr)
 
     vim.keymap.set("n", "<leader>v", vim.lsp.buf.hover, opts)
     vim.keymap.set("n", "<leader>i", vim.lsp.buf.implementation, opts)
-    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)      -- r -> rename
+    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)  -- r -> rename
     vim.keymap.set("n", "<leader>a", vim.lsp.buf.code_action, opts) -- a -> action
-    vim.keymap.set("n", "<leader>u", vim.lsp.buf.references, opts)  -- u -> usages
+    vim.keymap.set("n", "<leader>u", vim.lsp.buf.references, opts) -- u -> usages
     vim.keymap.set("n", "<leader>h", function()
         vim.diagnostic.open_float()
     end)
@@ -106,126 +91,117 @@ local function jdtls_on_attach(client, bufnr)
     vim.keymap.set("x", "<leader>jrm", "<esc><Cmd>lua require('jdtls').extract_method(true)<cr>", opts)
 end
 
-local function jdtls_setup(event)
-    local jdtls = require("jdtls")
-
-    local path = get_jdtls_paths()
-
-    local data_dir = path.data_dir .. "/" .. vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
-
-    if cache_vars.capabilities == nil then
-        jdtls.extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
-
-        local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
-        cache_vars.capabilities = vim.tbl_deep_extend(
-            "force",
-            vim.lsp.protocol.make_client_capabilities(),
-            ok_cmp and cmp_lsp.default_capabilities() or {}
-        )
-    end
-
-    local cmd = {
-        "java",
-        "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-        "-Dosgi.bundles.defaultStartLevel=4",
-        "-Declipse.product=org.eclipse.jdt.ls.core.product",
-        "-Dlog.protocol=true",
-        "-Dlog.level=ALL",
-        "-javaagent:" .. path.java_agent,
-        "-Xms1g",
-        "--add-modules=ALL-SYSTEM",
-        "--add-opens",
-        "java.base/java.util=ALL-UNNAMED",
-        "--add-opens",
-        "java.base/java.lang=ALL-UNNAMED",
-        "-jar", path.launcher_jar,
-        "-configuration", path.platform_config,
-        "-data", data_dir,
-    }
-
-    local lsp_settings = {
-        java = {
-            eclipse = {
-                downloadSources = true,
-            },
-            configuration = {
-                updateBuildConfiguration = "interactive",
-                runtimes = path.runtimes,
-            },
-            maven = {
-                downloadSources = true,
-            },
-            implementationsCodeLens = {
-                enabled = true,
-            },
-            referencesCodeLens = {
-                enabled = true,
-            },
-            -- inlayHints = {
-            --   parameterNames = {
-            --     enabled = "all" -- literals, all, none
-            --   }
-            -- },
-            format = {
-                enabled = true,
-                -- settings = {
-                --   profile = "asdf"
-                -- },
+local capabilities = {
+    workspace = {
+        configuration = true
+    },
+    textDocument = {
+        completion = {
+            completionItem = {
+                snippetSupport = true
             }
+        }
+    }
+}
+
+local config = {
+    flags = {
+        allow_incremental_sync = true,
+    }
+}
+
+config.cmd = {
+    --
+    -- 				-- 💀
+    "java", -- or '/path/to/java17_or_newer/bin/java'
+    -- depends on if `java` is in your $PATH env variable and if it points to the right version.
+
+    "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+    "-Dosgi.bundles.defaultStartLevel=4",
+    "-Declipse.product=org.eclipse.jdt.ls.core.product",
+    "-Dlog.protocol=true",
+    "-Dlog.level=ALL",
+    "-Xmx1g",
+    "-javaagent:" .. lombok_path,
+    "--add-modules=ALL-SYSTEM",
+    "--add-opens",
+    "java.base/java.util=ALL-UNNAMED",
+    "--add-opens",
+    "java.base/java.lang=ALL-UNNAMED",
+
+    -- 💀
+    "-jar",
+    path_to_jar,
+    -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                       ^^^^^^^^^^^^^^
+    -- Must point to the                                                     Change this to
+    -- eclipse.jdt.ls installation                                           the actual version
+
+    -- 💀
+    "-configuration",
+    path_to_config,
+    -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^        ^^^^^^
+    -- Must point to the                      Change to one of `linux`, `win` or `mac`
+    -- eclipse.jdt.ls installation            Depending on your system.
+
+    -- 💀
+    -- See `data directory configuration` section in the README
+    "-data",
+    workspace_dir,
+}
+
+config.settings = {
+    java = {
+        references = {
+            includeDecompiledSources = true,
         },
-        signatureHelp = {
+        format = {
             enabled = true,
         },
+        eclipse = {
+            downloadSources = true,
+        },
+        maven = {
+            downloadSources = true,
+        },
+        signatureHelp = { enabled = true },
+        contentProvider = { preferred = "fernflower" },
         completion = {
-            favoriteStaticMembers = {
-                "java.util.Objects.requireNonNull",
-                "java.util.Objects.requireNonNullElse",
-                "org.junit.jupiter.api.Assertions.*",
-                "org.hamcrest.MatcherAssert.assertThat",
-                "org.hamcrest.Matchers.*",
-                "org.hamcrest.CoreMatchers.*",
-                "org.mockito.Mockito.*",
+            filteredTypes = {
+                "com.sun.*",
+                "io.micrometer.shaded.*",
+                "java.awt.*",
+                "jdk.*",
+                "sun.*",
             },
             importOrder = {
                 "java",
                 "javax",
-                "org",
                 "com",
-            }
+                "org",
+            },
         },
-        extendedClientCapabilities = jdtls.extendedClientCapabilities,
         sources = {
             organizeImports = {
                 starThreshold = 9999,
                 staticStarThreshold = 9999,
-            }
-        },
-        codeGeneration = {
-            toString = {
-                template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
             },
-            useBlocks = true,
         },
-    }
+    },
+}
 
-    -- This starts a new client & server,
-    -- or attaches to an existing client & server depending on the `root_dir`.
-
-    local config = {
-        cmd = cmd,
-        settings = lsp_settings,
-        on_attach = jdtls_on_attach,
-        capabilities = cache_vars.capabilities,
-        root_dir = jdtls.setup.find_root(root_files),
-        flags = {
-            allow_incremental_sync = true,
-        },
-        init_options = {
-            bundles = path.bundles,
-        },
-    }
-
-    jdtls.start_or_attach(config)
+config.on_attach = on_attach
+config.capabilities = capabilities
+config.on_init = function(client, _)
+    client.notify('workspace/didChangeConfiguration', { settings = config.settings })
 end
 
-jdtls_setup({})
+local extendedClientCapabilities = require 'jdtls'.extendedClientCapabilities
+extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
+
+config.init_options = {
+    bundles = bundles,
+    extendedClientCapabilities = extendedClientCapabilities,
+}
+
+-- Start Server
+require('jdtls').start_or_attach(config)
