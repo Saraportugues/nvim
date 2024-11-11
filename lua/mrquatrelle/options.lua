@@ -18,3 +18,5 @@ o.ignorecase = true
 
 o.scrolloff = 5
 o.cursorline = true
+
+o.guicursor = "n-v-c-i-o:block"

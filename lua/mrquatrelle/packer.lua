@@ -1,3 +1,5 @@
+local vim = vim -- shut up, LSP!
+
 return require("packer").startup(function(use)
     use {
         "wbthomason/packer.nvim",
@@ -94,8 +96,16 @@ return require("packer").startup(function(use)
         run = "make"
     }
 
-    use({
+    use {
         "iamcco/markdown-preview.nvim",
         run = function() vim.fn["mkdp#util#install"]() end,
-    })
+    }
+
+    use {
+        "donRaphaco/neotex",
+    }
+
+    use {
+        "https://github.com/paretje/nvim-man",
+    }
 end)

@@ -1,6 +1,6 @@
 require("tokyonight").setup({
     style = "night",
-    transparent = "true",
+    transparent = tostring(vim.g.neovide == nil),
     sidebars = { "packer" },
     on_colors = function(colors)
         colors.red = "#EE4B2B"
