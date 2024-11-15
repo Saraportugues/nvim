@@ -1,4 +1,3 @@
-local vim = vim -- just so the lsp shuts up
 local keymap = vim.keymap
 local vlsp = vim.lsp
 
@@ -6,7 +5,6 @@ vim.opt.signcolumn = "yes" -- Reserve space for diagnostic icons
 
 local lsp_zero = require("lsp-zero")
 lsp_zero.preset("recommended")
-
 
 lsp_zero.on_attach(function(_, bufnr)
     local bufopts = { noremap = true, silent = true, buffer = bufnr }

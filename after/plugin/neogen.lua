@@ -1,5 +1,3 @@
-local vim = vim -- just so the lsp shuts up
-
 local neogen = require("neogen")
 neogen.setup({ snippet_engine = "luasnip" })
 

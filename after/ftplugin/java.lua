@@ -1,4 +1,3 @@
-local vim = vim
 local jdtls = require("jdtls")
 -- local jdtls_dap = require("jdtls.dap")
 local jdtls_setup = require("jdtls.setup")
@@ -61,9 +60,9 @@ local on_attach = function(_, bufnr)
 
     vim.keymap.set("n", "<leader>v", vim.lsp.buf.hover, opts)
     vim.keymap.set("n", "<leader>i", vim.lsp.buf.implementation, opts)
-    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)  -- r -> rename
+    vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, opts)      -- r -> rename
     vim.keymap.set("n", "<leader>a", vim.lsp.buf.code_action, opts) -- a -> action
-    vim.keymap.set("n", "<leader>u", vim.lsp.buf.references, opts) -- u -> usages
+    vim.keymap.set("n", "<leader>u", vim.lsp.buf.references, opts)  -- u -> usages
     vim.keymap.set("n", "<leader>h", function()
         vim.diagnostic.open_float()
     end)

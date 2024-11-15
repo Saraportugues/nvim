@@ -1,5 +1,3 @@
-local vim = vim -- shut up, LSP!
-
 return require("packer").startup(function(use)
     use {
         "wbthomason/packer.nvim",
