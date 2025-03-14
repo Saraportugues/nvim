@@ -5,7 +5,7 @@ local telescope = require("telescope")
 telescope.setup({
     pickers = {
         find_files = {
-            find_command = { "fd", "--type", "f", "--hidden", "--strip-cwd-prefix", "--exclude", ".git" },
+            find_command = { "fdfind", "--type", "f", "--hidden", "--strip-cwd-prefix", "--exclude", ".git" },
         },
     }
 })

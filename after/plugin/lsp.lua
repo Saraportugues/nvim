@@ -4,7 +4,25 @@ local vlsp = vim.lsp
 vim.opt.signcolumn = "yes" -- Reserve space for diagnostic icons
 
 local lsp_zero = require("lsp-zero")
-lsp_zero.preset("recommended")
+
+-- configura o que vai acontecer quando um servidor LSP conectar no buffer
+lsp_zero.on_attach(function(client, bufnr)
+  -- mapeia teclas padrão do lsp-zero
+  lsp_zero.default_keymaps({buffer = bufnr})
+end)
+
+-- configura servidores automaticamente com mason-lspconfig (opcional mas recomendado)
+require('mason').setup({})
+require('mason-lspconfig').setup({
+  ensure_installed = { 'lua_ls', 'pyright', 'tsserver' }, -- você coloca os servidores que quiser aqui
+  handlers = {
+    -- configuração padrão para qualquer servidor
+    function(server_name)
+      require('lspconfig')[server_name].setup({})
+    end,
+  },
+})
+
 
 lsp_zero.on_attach(function(_, bufnr)
     local bufopts = { noremap = true, silent = true, buffer = bufnr }
